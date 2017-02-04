@@ -6,3 +6,74 @@ body {
 a {
   color: #00B7FF;
 }
+
+.w3-allerta
+{
+  font-family: 'Allerta Stencil', serif;
+}
+
+.w3-source-code
+{
+  font-family: 'Source Code Pro', monospace;
+}
+
+#game
+{
+  font-size:1.5vw;
+  padding:10px;
+}
+
+#inputbox
+{
+  border-top:2px solid indigo;
+  text-align: center;
+  font-size:60px;
+  height:200px;
+}
+.inputdiv
+{
+  position:absolute;
+  bottom:0px;
+  left:0px;
+  right:0px;
+  margin:0px;
+}
+.label
+{
+  border-radius:5px;
+  z-index:1000;
+  position:relative;
+  bottom:-3px;
+  text-align:center;
+  width:140px;
+  margin:auto;
+}
+
+@keyframes countdown
+{
+  0%{
+    opacity:1;
+  }
+  50%{
+    opacity:0.3;
+  }
+  100%{
+    opacity:1;
+  }
+}
+
+#timer
+{
+  animation:countdown 0.9s infinite;
+}
+#countdown
+{
+  text-align:center;
+  z-index:9999;
+  position:absolute;
+  bottom:0px;
+  left:0px;
+  right:0px;
+  top:0px;
+  background:white;
+}
