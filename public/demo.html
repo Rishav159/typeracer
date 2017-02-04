@@ -18,13 +18,19 @@
       socket.on('msg', function (data) {
         $("#chats").prepend(data+"<br>")
       });
+
       var send = function(){
         socket.emit('msg', $("#msg").val());
       }
-      socket.on('time', function (data) {
+
+      socket.on('timer_is_set', function (data) {
         initializeClock('timer',data)
       });
-      
+
+      socket.on('start_game', function (data) {
+        $("#timer").html("Game has started")
+      });
+
       var getTimeRemaining = function(endtime){
         var now = new Date();
         var t = Date.parse(endtime) - Date.parse(now);
@@ -51,6 +57,7 @@
           };
         }
       }
+      
       function initializeClock(id, endtime){
         var clock = document.getElementById(id);
         function updateClock(){
