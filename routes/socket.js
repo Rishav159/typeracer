@@ -7,4 +7,4 @@ var prepareSocket = function(socket){
     console.log("Bye Bye");
   })
 }
-module.exports()
+module.exports = prepareSocket
