@@ -8,27 +8,32 @@
   </head>
   <body>
     <div id="chats"></div>
-    <input type="text" placeholder="Say Something!" id="msg"/>
-    <button onclick='send()' type="button" name="submit">Send</button>
+    <button onclick='set_timer()' type="button" name="submit">Start Timer</button>
+    <input id='para' type="text" name="para" value="">
     <div id="timer">
 
     </div>
+    <div id="game">
+
+    </div>
     <script type="text/javascript">
-      var socket = io.connect('http://localhost:3000');
+      var socket = io.connect('http://192.168.1.134:3000');
       socket.on('msg', function (data) {
         $("#chats").prepend(data+"<br>")
       });
 
-      var send = function(){
-        socket.emit('msg', $("#msg").val());
+      var set_timer = function(){
+        socket.emit('set_timer');
       }
-
+      var set_paragraph = function(){
+        socket.emit('set_paragraph',$('#para').val())
+      }
       socket.on('timer_is_set', function (data) {
         initializeClock('timer',data)
       });
 
       socket.on('start_game', function (data) {
-        $("#timer").html("Game has started")
+        $("#game").html(data)
       });
 
       var getTimeRemaining = function(endtime){

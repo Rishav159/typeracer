@@ -33,7 +33,8 @@ var prepareSocket = function(socket){
       var t = getTimeRemaining(endtime);
       if(t.total<=0){
         clearInterval(timeinterval);
-        socket.broadcast.emit('start_game',{})
+        socket.emit('start_game')
+        socket.broadcast.emit('start_game',global.paragraph)
       }
     }
     updateClock()
@@ -46,16 +47,16 @@ var prepareSocket = function(socket){
     t.setSeconds(t.getSeconds()+5);
     initializeClock(t);
     socket.broadcast.emit('timer_is_set',t)
+    socket.emit('timer_is_set',t)
   })
 
-
-  socket.on('msg',function(data){
-    socket.broadcast.emit('msg',data)
-  });
+  socket.on('set_paragraph',function(para){
+    global.paragraph = para
+  })
 
   socket.on('disconnect',function(){
     console.log("Bye Bye");
   });
-  
+
 }
 module.exports = prepareSocket
