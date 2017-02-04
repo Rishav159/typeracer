@@ -7,18 +7,14 @@
     <title>Type Racer</title>
   </head>
   <body>
-    <div id="chats"></div>
-    <button onclick='set_timer()' type="button" name="submit">Start Timer</button>
     <input id='para' type="text" name="para" value="">
     <button onclick="set_paragraph()"type="button" name="submit">Submit Para</button>
-    <div id="timer">
+    <button onclick='set_timer()' type="button" name="submit">Start Timer</button>
+    <div id="timer"></div>
+    <div id="game"></div>
 
-    </div>
-    <div id="game">
-
-    </div>
     <script type="text/javascript">
-      var socket = io.connect('http://192.168.1.134:3000');
+      var socket = io();
       socket.on('msg', function (data) {
         $("#chats").prepend(data+"<br>")
       });
