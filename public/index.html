@@ -36,7 +36,7 @@
         initializeClock('timer',data)
       });
 
-      var para;
+      var para;//variable to store global paragraph
 
       socket.on('start_game', function (data) {
         var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
@@ -46,13 +46,17 @@
         para=data;
       });
 
-      var check_para=function(){
-          var input = $('#inputbox').val();
+      $('#inputbox').keyup(check_para)
+
+      function check_para(event){
+        if(event.which==32){
+          var input = $.trim($('#inputbox').val());
           if(input==para){
               $('#result').html("yes");
           }
           else
              $('#result').html("no");
+        }
       }
 
       var getTimeRemaining = function(endtime){
