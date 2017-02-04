@@ -12,7 +12,7 @@
     <div id="game"></div>
     <div id="result"></div>
     <input type="text" id="inputbox">
-    <button type="submit" onclick="evaluate()">Submit</button>
+    <button type="submit" onclick="check_para()">Submit</button>
 
     <script type="text/javascript">
       var socket = io();
@@ -28,7 +28,7 @@
         para=data;
       });
 
-      var evaluate=function(){
+      var check_para=function(){
           var input = $('#inputbox').val();
           if(input==para){
               $('#result').html("yes");
