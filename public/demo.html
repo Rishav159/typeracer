@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="scripts/socket.io.js"></script>
+    <script src="scripts/jquery-3.1.1.min.js"></script>
+    <title>DEMO CHAT APP</title>
+  </head>
+  <body>
+    <div id="chats"></div>
+    <input type="text" placeholder="Say Something!" id="msg"/>
+    <button onclick='send()' type="button" name="submit">Send</button>
+    <script>
+      var socket = io.connect('http://localhost');
+      socket.on('msg', function (data) {
+        $("#chats").prepend(data)
+      });
+      var send = function(){
+        socket.emit('msg', $("#msg").val());
+      }
+    </script>
+  </body>
+</html>
