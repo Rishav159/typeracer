@@ -33,7 +33,7 @@ var prepareSocket = function(socket){
       var t = getTimeRemaining(endtime);
       if(t.total<=0){
         clearInterval(timeinterval);
-        socket.emit('start_game')
+        socket.emit('start_game',global.paragraph)
         socket.broadcast.emit('start_game',global.paragraph)
       }
     }
