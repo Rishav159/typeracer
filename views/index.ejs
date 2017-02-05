@@ -30,17 +30,19 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-      var para, words, ctr,time_interval,timeinterval;
+      var count_start , para, words, ctr,time_interval,timeinterval;
       $(document).ready(function(){
         initializePage();
         socket = io();
         var location = window.location.pathname.split('/')
         var name = location[location.length-1]
         socket.emit("new_player",name);
-        socket.on('timer_is_set', function (data) {
+        socket.on('timer_is_set', function () {
           initializePage();
-          initializeClock('timer',data)
-          console.log(data);
+          now = new Date()
+          count_start = now
+          now.setSeconds(now.getSeconds()+5)
+          initializeClock('timer',now)
         });
         socket.on('start_game', function (data) {
           var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
@@ -80,7 +82,9 @@
           var input = $.trim($('#inputbox').val());
           if(input == words[ctr]){
             //emits a 'correct' event when player types a word correctly
-              socket.emit("correct",new Date());
+              time_passed = new Date() - count_start
+              console.log(time_passed);
+              socket.emit("correct",time_passed);
               $('#result').html("Correct!");
               var id = "#w" + ctr;
               $(id).css('background-color', '#FFF');
@@ -90,6 +94,10 @@
               $(id).css('background-color', '#FFFF99');
               if(ctr==words.length){
                 clearInterval(timeinterval);
+                var millis = Math.floor((time_passed%1000)/10);
+                var seconds = Math.floor( (time_passed/1000) % 60 );
+                var minutes = Math.floor( (time_passed/1000/60) % 60 );
+                $('#timer').html(minutes+":"+seconds+":"+millis)
                 $('#inputbox').prop('disabled',true);
               }
               $('#inputbox').val("");

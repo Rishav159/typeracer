@@ -41,12 +41,17 @@ var prepareSocket = function(socket){
 
 
   socket.on('set_timer',function(){
+    for(player in global.players){
+      global.players[player]['score'] = 0
+      global.players[player]['time'] = 0
+    }
     var t = new Date();
     global.start_time = t
     t.setSeconds(t.getSeconds()+5);
     initializeClock(t);
-    socket.broadcast.emit('timer_is_set',t)
-    socket.emit('timer_is_set',t)
+    socket.emit('timer_is_set')
+    socket.broadcast.emit('timer_is_set')
+
   })
 
   socket.on('set_paragraph',function(para){

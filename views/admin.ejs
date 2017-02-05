@@ -32,8 +32,8 @@
       var set_paragraph = function(){
         socket.emit('set_paragraph',$('#para').val())
       }
-      socket.on('timer_is_set', function (data) {
-        initializeClock('timer',data)
+      socket.on('timer_is_set', function () {
+        initializeClock('timer',new Date()+5)
       });
 
       socket.on('start_game', function (data) {
@@ -42,8 +42,8 @@
       socket.on('leaderboards',function(leaderboards,start_time){
         players = []
         for(player in leaderboards){
-          time_taken = Math.abs(Date.parse(leaderboards[player]['time']) - Date.parse(start_time))
-          players.push([player,leaderboards[player]['score'],time_taken])
+
+          players.push([player,leaderboards[player]['score'],leaderboards[player]['time']])
         }
         players.sort(function(a,b){
           if(b[1] == a[1]){
