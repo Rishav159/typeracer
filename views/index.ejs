@@ -53,7 +53,7 @@
           clearInterval()
           initializeTimer('timer',new Date());
         });
-        $('#inputbox').keyup(check_word)
+        $('#inputbox').keydown(check_word)
       });
 
       var initializePage = function(){
@@ -115,7 +115,7 @@
         var now = new Date();
         var t = Date.parse(now) - Date.parse(starttime);
 
-        
+
         var millis = Math.floor( (t%1000) / 10 );
 
         starttime = new Date(starttime)
@@ -147,7 +147,7 @@
         function updateTimer(){
           var t = getTimeElapsed(starttime);
 
-          
+
 
           clock.innerHTML =
                             ('0' + t.minutes).slice(-2) + ':' +
