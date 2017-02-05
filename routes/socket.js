@@ -67,8 +67,8 @@ var prepareSocket = function(socket){
   //gets ID of the socket that emits 'correct' event and increments its score in global.players
   socket.on('correct',function(){
     global.players[socket.id]++;
+    console.log("correct word by player with socket_id "+socket.id);
     console.log(JSON.stringify(global.players));
-    console.log("'correct' event emitted by "+socket.id);
   });
 
 }

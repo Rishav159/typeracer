@@ -38,28 +38,34 @@
         initializeClock('timer',data)
       });
 
-      var para;   //variable to store global paragraph
+      var para, words, ctr;
 
       socket.on('start_game', function (data) {
         var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
         $('#timer').hide();
         $('#main').prepend(begin);
         $("#game").html(data);
-        para=data;
+        para = data;
+        words = para.split(" ");
+        console.log(words);
+        ctr = 0;
       });
 
-      $('#inputbox').keyup(check_para)
+      $('#inputbox').keyup(check_word)
 
-      function check_para(event){
+      function check_word(event){
         if(event.which==32){
           var input = $.trim($('#inputbox').val());
-          if(input==para){
+          console.log(input +" "+ words[ctr]);
+          if(input == words[ctr]){
             //emits a 'correct' event when player types a word correctly
               socket.emit("correct");
               $('#result').html("yes");
           }
           else
              $('#result').html("no");
+          ctr++;
+          $('#inputbox').val("");
         }
       }
 
