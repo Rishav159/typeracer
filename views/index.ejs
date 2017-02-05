@@ -30,7 +30,7 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-      var para, words, ctr;
+      var para, words, ctr,time_interval;
       $(document).ready(function(){
         initializePage();
         socket = io();
@@ -106,14 +106,13 @@
 
       var getTimeElapsed = function(starttime){
         var now = new Date();
-        var t = Date.parse(starttime) - Date.parse(now);
+        var t = Date.parse(now) - Date.parse(starttime);
         starttime = new Date(starttime)
-        var millis = Math.abs(starttime.getMilliseconds() - now.getMilliseconds())
+        var millis = Math.abs(now.getMilliseconds() - starttime.getMilliseconds())
 
         var millis = Math.floor(millis / 10 );
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
-
         if(t<=0){
           return {
             'total': 0,
@@ -153,11 +152,11 @@
                             ('0' + t.seconds).slice(-2) + ':' +
                            ('0' + t.millis).slice(-2);
           if(t.total<=0){
-            clearInterval(timeinterval);
+            clearInterval(time_interval);
           }
         }
         updateClock()
-        var timeinterval = setInterval(updateClock,20);
+        time_interval = setInterval(updateClock,20);
       }
 
 
