@@ -2,13 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script src="scripts/socket.io.js"></script>
+    <script src="/scripts/socket.io.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600" rel="stylesheet">
-    <link rel="stylesheet" href="stylesheets/style.css">
-    <script src="scripts/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="/scripts/jquery-3.1.1.min.js"></script>
     <title>Type Racer</title>
   </head>
   <body>
@@ -30,33 +30,21 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-    var socket;
-
-      var initialize_player = function(socket,name){
-        socket = io();
-        socket.emit("new_player",name);
-
-        socket.on('timer_is_set', function (data) {
-          initializeClock('timer',data)
-        });
-      }
-
-      var initializePage = function(){
-        $('#timer').html("00:00:05");
-        $('#game').html("Wait for it.");
-        $('#main').html("");
-        $('#result').html("");
-      }
-
+    var para, words, ctr;
+    $(document).ready(function(){
       initializePage();
-
+      socket = io();
+      var location = window.location.pathname.split('/')
+      var name = location[location.length-1]
+      socket.emit("new_player",name);
+      console.log(name);
+      socket.on('timer_is_set', function (data) {
+        initializeClock('timer',data)
+      });
       socket.on('timer_is_set', function (data) {
         initializePage();
         initializeClock('timer',data)
       });
-
-      var para, words, ctr;
-
       socket.on('start_game', function (data) {
         var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
         $('#timer').html("");
@@ -67,8 +55,14 @@
         console.log(words);
         ctr = 0;
       });
-
       $('#inputbox').keyup(check_word)
+    });
+      var initializePage = function(){
+        $('#timer').html("00:00:05");
+        $('#game').html("Wait for it.");
+        $('#main').html("");
+        $('#result').html("");
+      }
 
       function check_word(event){
         if(event.which==32){
@@ -129,9 +123,8 @@
         updateClock()
         var timeinterval = setInterval(updateClock,1000);
       }
-      // var t = new Date();
-      // t.setSeconds(t.getSeconds() + 10);
-      // initializeClock('timer',t)
+
+
     </script>
   </body>
 </html>

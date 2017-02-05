@@ -58,7 +58,8 @@ var prepareSocket = function(socket){
     console.log("Bye Bye socket with id="+socket.id);
   });
 
-  socket.on('new_player',function(){
+  socket.on('new_player',function(data){
+    socket.id = data
     console.log("A new player connected with socket_id="+socket.id);
     global.players[socket.id]=0;
     console.log("global.players="+JSON.stringify(global.players));
