@@ -66,6 +66,7 @@
 
       function check_word(event){
         if(event.which==32){
+        $('#inputbox').removeAttr('placeholder');
           var input = $.trim($('#inputbox').val());
           if(input == words[ctr]){
             //emits a 'correct' event when player types a word correctly
