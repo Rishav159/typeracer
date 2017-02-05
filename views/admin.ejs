@@ -15,7 +15,10 @@
     <div id="timer"></div>
     <div id="game"></div>
     <div id="leaderboards">
+      <table id = "leader_table">
 
+
+      </table>
     </div>
 
 
@@ -44,18 +47,17 @@
         }
         players.sort(function(a,b){
           if(b[1] == a[1]){
-            return b[2]-a[2]
+            return a[2]-b[2]
           }
           return b[1]-a[1]
         })
-        console.log(players);
-        $('#leaderboards').html('')
+        $('#leader_table').html("<thead><td>Name</td><td>Words</td><td>Time Taken</td></thead>")
         for(var i =0;i<players.length;i++){
           player = players[i]
-          time_elapsed = player[2]
-          var ele = player[0] + " : " + player[1] + " : "+player[2]+ "<br>" ;
+          time_elapsed = ('0'+Math.floor( (player[2]/1000/60) % 60 )).slice(-2) + ":"+('0'+Math.floor( (player[2]/1000) % 60 )).slice(-2) + ":"+('0' + Math.floor((player[2] %1000)/10)).slice(-2)
+          var ele = "<tr><td>"+player[0]+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td></tr>"
           console.log(ele);
-          $('#leaderboards').append(ele)
+          $('#leader_table').append(ele)
         }
       });
       var getTimeRemaining = function(endtime){
