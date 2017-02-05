@@ -59,7 +59,7 @@
           var ele = "<tr class='w3-animate-left'><td>"+index+"</td><td>"+player[0]+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td></tr>"
           console.log(ele);
 
-        $('#leader_table').html("<thead><td>Rank</td><td>Name</td><td>Words</td><td>Time Taken</td><td>Words Per Minute</td></thead>")
+        $('#leader_table').html("<thead class='w3-red'><td>Rank</td><td>Name</td><td>Words</td><td>Time Taken</td><td>Words Per Minute</td></thead>")
         for(var i =0;i<players.length;i++){
           player = players[i]
           index = i+1
@@ -73,7 +73,7 @@
           var ele = "<tr><td>"+index+"</td><td>"+player[0]+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td><td>"+wpm+"</td></tr>"
           $('#leader_table').append(ele)
         }
-      };
+      }});
       var getTimeRemaining = function(endtime){
         var now = new Date();
         var t = Date.parse(endtime) - Date.parse(now);
