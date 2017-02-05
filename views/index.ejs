@@ -45,16 +45,25 @@
         socket.on('start_game', function (data) {
           var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
           $('#main').html(begin);
-          $("#game").html(data);
+          // $("#game").html(data);
           $('#inputbox').prop('disabled',false);
           para = data;
-          words = para.split(" ");
+          var input = $.trim(para);
+          words = input.split(" ");
+          populate_para(words);
           ctr = 0;
           clearInterval()
           initializeTimer('timer',new Date());
         });
         $('#inputbox').keydown(check_word)
       });
+
+      var populate_para = function(words) {
+        $("#game").html("");
+        for(var i=0;i<words.length;i++){
+           $("#game").append('<span id="w' + i+1 + '">'+ words[i]+' </span>');
+        }
+      }
 
       var initializePage = function(){
         $('#timer').html("00:05:00");
