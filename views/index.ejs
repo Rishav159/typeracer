@@ -15,9 +15,9 @@
 
     <div class="w3-container w3-center">
       <div id="main"></div>
-      <h1 class="w3-allerta w3-text-red w3-animate-top" id="timer">00:00:05</h1>
+      <h1 class="w3-allerta w3-text-red w3-animate-top" id="timer"></h1>
       <div class="w3-container w3-border w3-round">
-        <h3 class="w3-text-grey w3-source-code" id="game">Wait for it.</h3>
+        <h3 class="w3-text-grey w3-source-code" id="game"></h3>
       </div>
       <div id="result"></div>
     </div>
@@ -30,35 +30,34 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-    var para, words, ctr;
-    $(document).ready(function(){
-      initializePage();
-      socket = io();
-      var location = window.location.pathname.split('/')
-      var name = location[location.length-1]
-      socket.emit("new_player",name);
-      console.log(name);
-      socket.on('timer_is_set', function (data) {
-        initializeClock('timer',data)
-      });
-      socket.on('timer_is_set', function (data) {
+      var para, words, ctr;
+      $(document).ready(function(){
         initializePage();
-        initializeClock('timer',data)
+        socket = io();
+        var location = window.location.pathname.split('/')
+        var name = location[location.length-1]
+        socket.emit("new_player",name);
+        socket.on('timer_is_set', function (data) {
+          initializeClock('timer',data)
+        });
+        socket.on('timer_is_set', function (data) {
+          initializePage();
+          initializeClock('timer',data)
+        });
+        socket.on('start_game', function (data) {
+          var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
+          $('#main').html(begin);
+          $("#game").html(data);
+          para = data;
+          words = para.split(" ");
+          ctr = 0;
+          initializeTimer('timer',new Date());
+        });
+        $('#inputbox').keyup(check_word)
       });
-      socket.on('start_game', function (data) {
-        var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
-        $('#timer').html("");
-        $('#main').html(begin);
-        $("#game").html(data);
-        para = data;
-        words = para.split(" ");
-        console.log(words);
-        ctr = 0;
-      });
-      $('#inputbox').keyup(check_word)
-    });
+
       var initializePage = function(){
-        $('#timer').html("00:00:05");
+        $('#timer').html("00:05:00");
         $('#game').html("Wait for it.");
         $('#main').html("");
         $('#result').html("");
@@ -67,7 +66,6 @@
       function check_word(event){
         if(event.which==32){
           var input = $.trim($('#inputbox').val());
-          console.log(input +" "+ words[ctr]);
           if(input == words[ctr]){
             //emits a 'correct' event when player types a word correctly
               socket.emit("correct");
@@ -83,28 +81,65 @@
       var getTimeRemaining = function(endtime){
         var now = new Date();
         var t = Date.parse(endtime) - Date.parse(now);
+        var millis = Math.floor( (t%1000) / 10 );
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
-        var hours = Math.floor( (t/(1000*60*60)) % 24 );
-        var days = Math.floor( t/(1000*60*60*24) );
 
         if(t<=0){
           return {
             'total': 0,
-            'days': 0,
-            'hours': 0,
             'minutes': 0,
-            'seconds': 0
+            'seconds': 0,
+            'millis': 0
           };
         }else{
           return {
             'total': t,
-            'days': days,
-            'hours': hours,
             'minutes': minutes,
-            'seconds': seconds
+            'seconds': seconds,
+            'millis': millis
           };
         }
+      }
+
+      var getTimeElapsed = function(starttime){
+        var now = new Date();
+        var t = Date.parse(now) - Date.parse(starttime);
+        console.log(t);
+        var millis = Math.floor( (t%1000) / 10 );
+        var seconds = Math.floor( (t/1000) % 60 );
+        var minutes = Math.floor( (t/1000/60) % 60 );
+
+        if(t<=0){
+          return {
+            'total': 0,
+            'minutes': 0,
+            'seconds': 0,
+            'millis': 0
+          };
+        }else{
+          return {
+            'total': t,
+            'minutes': minutes,
+            'seconds': seconds,
+            'millis': millis
+          };
+        }
+      }
+
+      function initializeTimer(id, starttime){
+        console.log(starttime);
+        var clock = document.getElementById(id);
+        function updateClock(){
+          var t = getTimeElapsed(starttime);
+          console.log(t);
+          clock.innerHTML =
+                            ('0' + t.minutes).slice(-2) + ':' +
+                            ('0' + t.seconds).slice(-2) + ':' +
+                           ('0' + t.millis).slice(-2);
+        }
+        updateClock()
+        var timeinterval = setInterval(updateClock,10);
       }
 
       function initializeClock(id, endtime){
@@ -113,15 +148,15 @@
           var t = getTimeRemaining(endtime);
 
           clock.innerHTML =
-                            ('0' + t.hours).slice(-2) + ':' +
                             ('0' + t.minutes).slice(-2) + ':' +
-                           ('0' + t.seconds).slice(-2);
+                            ('0' + t.seconds).slice(-2) + ':' +
+                           ('0' + t.millis).slice(-2);
           if(t.total<=0){
             clearInterval(timeinterval);
           }
         }
         updateClock()
-        var timeinterval = setInterval(updateClock,1000);
+        var timeinterval = setInterval(updateClock,10);
       }
 
 
