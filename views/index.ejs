@@ -30,7 +30,7 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-      var para, words, ctr,time_interval;
+      var para, words, ctr,time_interval,timeinterval;
       $(document).ready(function(){
         initializePage();
         socket = io();
@@ -46,6 +46,7 @@
           var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
           $('#main').html(begin);
           $("#game").html(data);
+          $('#inputbox').prop('disabled',false);
           para = data;
           words = para.split(" ");
           ctr = 0;
@@ -60,6 +61,7 @@
         $('#game').html("Wait for it.");
         $('#main').html("");
         $('#result').html("");
+        $('#inputbox').prop('disabled',false);
       }
 
       function check_word(event){
@@ -70,6 +72,10 @@
               socket.emit("correct",new Date());
               $('#result').html("Correct!");
               ctr++;
+              if(ctr==words.length){
+                clearInterval(timeinterval);
+                $('#inputbox').prop('disabled',true);
+              }
               $('#inputbox').val("");
           }
           else
@@ -107,10 +113,15 @@
       var getTimeElapsed = function(starttime){
         var now = new Date();
         var t = Date.parse(now) - Date.parse(starttime);
+
+        
+        var millis = Math.floor( (t%1000) / 10 );
+
         starttime = new Date(starttime)
         var millis = Math.abs(now.getMilliseconds() - starttime.getMilliseconds())
 
         var millis = Math.floor(millis / 10 );
+
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
         if(t<=0){
@@ -134,13 +145,16 @@
         var clock = document.getElementById(id);
         function updateTimer(){
           var t = getTimeElapsed(starttime);
+
+          
+
           clock.innerHTML =
                             ('0' + t.minutes).slice(-2) + ':' +
                             ('0' + t.seconds).slice(-2) + ':' +
                            ('0' + t.millis).slice(-2);
         }
         updateTimer()
-        var timeinterval = setInterval(updateTimer,20);
+        timeinterval = setInterval(updateTimer,20);
       }
 
       function initializeClock(id, endtime){
