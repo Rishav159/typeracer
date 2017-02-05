@@ -1,6 +1,15 @@
 #!/usr/bin/env node
 
 /**
+ * GLOBAL VARIABLES
+ */
+//variable to store the submitted paragraph by admin
+global.paragraph = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+//dictionary stores socketIDs of all connected sockets and their scores
+global.players = {};
+
+/**
  * Module dependencies.
  */
 
@@ -21,11 +30,6 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var io = require('socket.io')(server);
-global.paragraph = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-//dictionary stores socketIDs of all connected sockets and their scores
-global.players = {};
-
 io.on('connection',socketFunction);
 /**
  * Listen on provided port, on all network interfaces.
