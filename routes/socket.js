@@ -1,6 +1,8 @@
 var prepareSocket = function(socket){
 
-  console.log("A socket connected")
+  console.log("A socket connected with id="+socket.id);
+  global.players[socket.id]=0; 
+  //console.log("global.players="+JSON.stringify(global.players));
 
   var getTimeRemaining = function(endtime){
     var now = new Date();
@@ -55,7 +57,9 @@ var prepareSocket = function(socket){
   })
 
   socket.on('disconnect',function(){
-    console.log("Bye Bye");
+    delete global.players[socket.id];//deletes ID of socket on disconnection
+    //console.log("global.players="+JSON.stringify(global.players));
+    console.log("Bye Bye socket with id="+socket.id);
   });
 
 }
