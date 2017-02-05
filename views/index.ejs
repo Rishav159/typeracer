@@ -70,7 +70,7 @@
           console.log(input +" "+ words[ctr]);
           if(input == words[ctr]){
             //emits a 'correct' event when player types a word correctly
-              socket.emit("correct");
+              socket.emit("correct",new Date());
               $('#result').html("Correct!");
               ctr++;
               $('#inputbox').val("");
