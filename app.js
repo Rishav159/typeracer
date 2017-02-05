@@ -23,7 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', routes);
 app.use('/',function(req,res,next){
-  res.sendFile(__dirname+'/public/index.html')
+
+  res.sendFile(__dirname+'/public/new_player.html')
 })
 app.use('/users', users);
 

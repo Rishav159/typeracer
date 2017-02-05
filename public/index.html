@@ -30,13 +30,17 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
+    var socket;
+    
+      var initialize_player = function(socket,name){
+        socket = io();
+        socket.emit("new_player",name);
 
-      var socket = io();
-      socket.emit("new_player");
+        socket.on('timer_is_set', function (data) {
+          initializeClock('timer',data)
+        });
+      }
 
-      socket.on('timer_is_set', function (data) {
-        initializeClock('timer',data)
-      });
 
       var para, words, ctr;
 
@@ -61,11 +65,12 @@
             //emits a 'correct' event when player types a word correctly
               socket.emit("correct");
               $('#result').html("yes");
+              ctr++;
+              $('#inputbox').val("");
           }
           else
              $('#result').html("no");
-          ctr++;
-          $('#inputbox').val("");
+
         }
       }
 

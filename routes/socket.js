@@ -69,6 +69,7 @@ var prepareSocket = function(socket){
     global.players[socket.id]++;
     console.log("correct word by player with socket_id "+socket.id);
     console.log(JSON.stringify(global.players));
+    socket.broadcast.emit('leaderboards',global.players)
   });
 
 }
