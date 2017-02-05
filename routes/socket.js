@@ -2,7 +2,7 @@ var prepareSocket = function(socket){
 
   console.log("A socket connected with id="+socket.id);
   global.players[socket.id]=0; 
-  //console.log("global.players="+JSON.stringify(global.players));
+  console.log("global.players="+JSON.stringify(global.players));
 
   var getTimeRemaining = function(endtime){
     var now = new Date();
@@ -60,6 +60,13 @@ var prepareSocket = function(socket){
     delete global.players[socket.id];//deletes ID of socket on disconnection
     //console.log("global.players="+JSON.stringify(global.players));
     console.log("Bye Bye socket with id="+socket.id);
+  });
+
+  //gets ID of the socket that emits 'correct' event and increments its score in global.players
+  socket.on('correct',function(){
+    global.players[socket.id]++;
+    console.log(JSON.stringify(global.players));
+    console.log("'correct' event emitted by "+socket.id);
   });
 
 }
