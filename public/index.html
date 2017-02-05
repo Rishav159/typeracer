@@ -7,20 +7,20 @@
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:600" rel="stylesheet">
-    <link rel="stylesheet" href="stylesheets/style.css">    
+    <link rel="stylesheet" href="stylesheets/style.css">
     <script src="scripts/jquery-3.1.1.min.js"></script>
     <title>Type Racer</title>
   </head>
   <body>
     <div class="w3-container w3-center" id="main">
-      
+
       <h1 class="w3-jumbo w3-allerta w3-text-red w3-animate-top" id="timer">00:00:05</h1>
-      
+
       <div class="w3-container w3-border w3-round">
         <h3 class="w3-text-grey w3-source-code" id="game">Wait for it.</h3>
       </div>
       <div id="result"></div>
-    
+
     </div>
     <div class="inputdiv">
         <h3 class=" label w3-blue">Typing lane</h3>
@@ -28,15 +28,17 @@
         <!--<button class="w3-btn w3-green" type="submit" onclick="check_para()">Submit</button>-->
     </div>
 
-<!-- ---------------SCRIPT--------------- -->
+    <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
+
       var socket = io();
+      socket.emit("new_player");
 
       socket.on('timer_is_set', function (data) {
         initializeClock('timer',data)
       });
 
-      var para;//variable to store global paragraph
+      var para;   //variable to store global paragraph
 
       socket.on('start_game', function (data) {
         var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
