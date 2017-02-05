@@ -36,12 +36,13 @@ var prepareSocket = function(socket){
       }
     }
     updateClock()
-    var timeinterval = setInterval(updateClock,1000);
+    var timeinterval = setInterval(updateClock,10);
   }
 
 
   socket.on('set_timer',function(){
     var t = new Date();
+    global.start_time = t
     t.setSeconds(t.getSeconds()+5);
     initializeClock(t);
     socket.broadcast.emit('timer_is_set',t)
@@ -61,16 +62,19 @@ var prepareSocket = function(socket){
   socket.on('new_player',function(data){
     socket.id = data
     console.log("A new player connected with socket_id="+socket.id);
-    global.players[socket.id]=0;
+    global.players[socket.id]={};
+    global.players[socket.id]['score']=0;
+    global.players[socket.id]['time']=new Date();
     console.log("global.players="+JSON.stringify(global.players));
   });
 
   //gets ID of the socket that emits 'correct' event and increments its score in global.players
-  socket.on('correct',function(){
-    global.players[socket.id]++;
+  socket.on('correct',function(time){
+    global.players[socket.id]['score']++;
+    global.players[socket.id]['time'] = time;
     console.log("correct word by player with socket_id "+socket.id);
     console.log(JSON.stringify(global.players));
-    socket.broadcast.emit('leaderboards',global.players)
+    socket.broadcast.emit('leaderboards',global.players,global.start_time);
   });
 
 }
