@@ -78,12 +78,10 @@
       }
 
       function check_word(event){
-        ting.currentTime=0;
         if(event.which==32){
         $('#inputbox').removeAttr('placeholder');
           var input = $.trim($('#inputbox').val());
           if(input == words[ctr]){
-              ting.play();
             //emits a 'correct' event when player types a word correctly
               time_passed = new Date() - count_start
               console.log(time_passed);

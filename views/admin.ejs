@@ -50,6 +50,7 @@
           }
           return b[1]-a[1]
         })
+
         $('#leader_table').html("<tr class='w3-red'><th>Rank</th><th>Name</th><th>Words</th><th>Time Taken</th></tr>")
         for(var i =0;i<players.length;i++){
           player = players[i]
@@ -57,9 +58,22 @@
           time_elapsed = ('0'+Math.floor( (player[2]/1000/60) % 60 )).slice(-2) + ":"+('0'+Math.floor( (player[2]/1000) % 60 )).slice(-2) + ":"+('0' + Math.floor((player[2] %1000)/10)).slice(-2)
           var ele = "<tr class='w3-animate-left'><td>"+index+"</td><td>"+player[0]+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td></tr>"
           console.log(ele);
+
+        $('#leader_table').html("<thead><td>Rank</td><td>Name</td><td>Words</td><td>Time Taken</td><td>Words Per Minute</td></thead>")
+        for(var i =0;i<players.length;i++){
+          player = players[i]
+          index = i+1
+          var minutes = Math.floor( (player[2]/1000/60) % 60 )
+          var seconds = Math.floor( (player[2]/1000) % 60 )
+          var milliseconds = Math.floor((player[2] %1000)/10)
+          time_elapsed = ('0'+minutes).slice(-2) + ":"+('0'+seconds).slice(-2) + ":"+('0' + milliseconds).slice(-2)
+          time_taken = minutes+(seconds/60)
+          var wpm = player[1] / (minutes+(seconds/60))
+          wpm = Math.round (wpm*100) / 100
+          var ele = "<tr><td>"+index+"</td><td>"+player[0]+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td><td>"+wpm+"</td></tr>"
           $('#leader_table').append(ele)
         }
-      });
+      };
       var getTimeRemaining = function(endtime){
         var now = new Date();
         var t = Date.parse(endtime) - Date.parse(now);
