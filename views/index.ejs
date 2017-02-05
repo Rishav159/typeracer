@@ -71,6 +71,9 @@
               socket.emit("correct",new Date());
               $('#result').html("Correct!");
               ctr++;
+              if(ctr==words.length){
+                socket.emit('finish',new Date());
+              }
               $('#inputbox').val("");
           }
           else
@@ -105,7 +108,7 @@
       var getTimeElapsed = function(starttime){
         var now = new Date();
         var t = Date.parse(now) - Date.parse(starttime);
-        console.log(t);
+        
         var millis = Math.floor( (t%1000) / 10 );
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
@@ -128,11 +131,11 @@
       }
 
       function initializeTimer(id, starttime){
-        console.log(starttime);
+        
         var clock = document.getElementById(id);
         function updateClock(){
           var t = getTimeElapsed(starttime);
-          console.log(t);
+          
           clock.innerHTML =
                             ('0' + t.minutes).slice(-2) + ':' +
                             ('0' + t.seconds).slice(-2) + ':' +
