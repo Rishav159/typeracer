@@ -38,11 +38,9 @@
         var name = location[location.length-1]
         socket.emit("new_player",name);
         socket.on('timer_is_set', function (data) {
-          initializeClock('timer',data)
-        });
-        socket.on('timer_is_set', function (data) {
           initializePage();
           initializeClock('timer',data)
+          console.log(data);
         });
         socket.on('start_game', function (data) {
           var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
@@ -51,6 +49,7 @@
           para = data;
           words = para.split(" ");
           ctr = 0;
+          clearInterval()
           initializeTimer('timer',new Date());
         });
         $('#inputbox').keyup(check_word)
@@ -81,7 +80,10 @@
       var getTimeRemaining = function(endtime){
         var now = new Date();
         var t = Date.parse(endtime) - Date.parse(now);
-        var millis = Math.floor( (t%1000) / 10 );
+        endtime = new Date(endtime)
+        var millis = Math.abs(endtime.getMilliseconds() - now.getMilliseconds())
+
+        var millis = Math.floor(millis / 10 );
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
 
@@ -104,9 +106,11 @@
 
       var getTimeElapsed = function(starttime){
         var now = new Date();
-        var t = Date.parse(now) - Date.parse(starttime);
-        console.log(t);
-        var millis = Math.floor( (t%1000) / 10 );
+        var t = Date.parse(starttime) - Date.parse(now);
+        starttime = new Date(starttime)
+        var millis = Math.abs(starttime.getMilliseconds() - now.getMilliseconds())
+
+        var millis = Math.floor(millis / 10 );
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
 
@@ -128,25 +132,22 @@
       }
 
       function initializeTimer(id, starttime){
-        console.log(starttime);
         var clock = document.getElementById(id);
-        function updateClock(){
+        function updateTimer(){
           var t = getTimeElapsed(starttime);
-          console.log(t);
           clock.innerHTML =
                             ('0' + t.minutes).slice(-2) + ':' +
                             ('0' + t.seconds).slice(-2) + ':' +
                            ('0' + t.millis).slice(-2);
         }
-        updateClock()
-        var timeinterval = setInterval(updateClock,10);
+        updateTimer()
+        var timeinterval = setInterval(updateTimer,20);
       }
 
       function initializeClock(id, endtime){
         var clock = document.getElementById(id);
         function updateClock(){
           var t = getTimeRemaining(endtime);
-
           clock.innerHTML =
                             ('0' + t.minutes).slice(-2) + ':' +
                             ('0' + t.seconds).slice(-2) + ':' +
@@ -156,7 +157,7 @@
           }
         }
         updateClock()
-        var timeinterval = setInterval(updateClock,10);
+        var timeinterval = setInterval(updateClock,20);
       }
 
 
