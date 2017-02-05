@@ -30,7 +30,7 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-      var ting = new Audio("sounds/Mario-coin-sound.mp3");
+      
       var count_start , para, words, ctr,time_interval,timeinterval;
       $(document).ready(function(){
         initializePage();
@@ -94,12 +94,7 @@
               id = "#w" + ctr;
               $(id).css('background-color', '#FFFF99');
               if(ctr==words.length){
-                clearInterval(timeinterval);
-                var millis = Math.floor((time_passed%1000)/10);
-                var seconds = Math.floor( (time_passed/1000) % 60 );
-                var minutes = Math.floor( (time_passed/1000/60) % 60 );
-                $('#timer').html(('0' + minutes).slice(-2) + ':' +('0' + seconds).slice(-2) + ':' +('0' + millis).slice(-2))
-                $('#inputbox').prop('disabled',true);
+                onFinish();
               }
               $('#inputbox').val("");
           }
@@ -189,6 +184,15 @@
         time_interval = setInterval(updateClock,20);
       }
 
+      function onFinish(){
+        $('#begin').html('Finish');
+        clearInterval(timeinterval);
+        var millis = Math.floor((time_passed%1000)/10);
+        var seconds = Math.floor( (time_passed/1000) % 60 );
+        var minutes = Math.floor( (time_passed/1000/60) % 60 );
+        $('#timer').html(('0' + minutes).slice(-2) + ':' +('0' + seconds).slice(-2) + ':' +('0' + millis).slice(-2))
+        $('#inputbox').prop('disabled',true);
+      }
 
     </script>
   </body>
