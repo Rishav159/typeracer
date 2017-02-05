@@ -77,3 +77,14 @@ a {
   top:0px;
   background:white;
 }
+#signin
+{
+  position:relative;
+  top:50px;
+  width:40%;
+  margin:auto;
+}
+.racebtn
+{
+  height:70px;
+}

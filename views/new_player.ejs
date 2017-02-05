@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <script src="scripts/socket.io.js"></script>
+    <script src="https://use.fontawesome.com/8e5bb73657.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
@@ -13,15 +14,19 @@
   </head>
   <body>
     <div class="w3-container w3-center" id="main">
+      <h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top w3-margin">Enter the race</h1>
+      <div class="w3-display-container w3-row" id="signin">
+        <form class="" action="/" method="post">
+          <input class="w3-input w3-col m10 w3-border w3-display-bottomleft" type="text" name="name" value="" placeholder="Enter your name">
+          <input class="w3-input w3-col m10 w3-border w3-display-topleft" type="password" name="password" placeholder="Enter password" value="">
+          <button class="w3-btn w3-col m2 w3-blue w3-display-right racebtn" type="submit" name="submit"><i class="fa fa-4x fa-angle-double-right" aria-hidden="true"></i></button>
+        </form>
+      </div>
 
-      <h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top">Sign in</h1>
-      <form class="" action="/" method="post">
-        <input type="text" name="name" value=""><br>
-        <input type="password" name="password" value="">
-        <button type="submit" name="submit">Submit</button>
-      </form>
     </div>
 
     <!--________________________SCRIPT_______________________-->
+    <script>
+    </script>
   </body>
 </html>

@@ -30,6 +30,7 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
+      var ting = new Audio("sounds/Mario-coin-sound.mp3");
       var count_start , para, words, ctr,time_interval,timeinterval;
       $(document).ready(function(){
         initializePage();
@@ -77,10 +78,12 @@
       }
 
       function check_word(event){
+        ting.currentTime=0;
         if(event.which==32){
         $('#inputbox').removeAttr('placeholder');
           var input = $.trim($('#inputbox').val());
           if(input == words[ctr]){
+              ting.play();
             //emits a 'correct' event when player types a word correctly
               time_passed = new Date() - count_start
               console.log(time_passed);
@@ -112,7 +115,6 @@
         var t = Date.parse(endtime) - Date.parse(now);
         endtime = new Date(endtime)
         var millis = Math.abs(endtime.getMilliseconds() - now.getMilliseconds())
-
         var millis = Math.floor(millis / 10 );
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
@@ -137,15 +139,10 @@
       var getTimeElapsed = function(starttime){
         var now = new Date();
         var t = Date.parse(now) - Date.parse(starttime);
-
-
         var millis = Math.floor( (t%1000) / 10 );
-
         starttime = new Date(starttime)
         var millis = Math.abs(now.getMilliseconds() - starttime.getMilliseconds())
-
         var millis = Math.floor(millis / 10 );
-
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
         if(t<=0){
@@ -169,9 +166,6 @@
         var clock = document.getElementById(id);
         function updateTimer(){
           var t = getTimeElapsed(starttime);
-
-
-
           clock.innerHTML =
                             ('0' + t.minutes).slice(-2) + ':' +
                             ('0' + t.seconds).slice(-2) + ':' +
