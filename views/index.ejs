@@ -61,7 +61,8 @@
       var populate_para = function(words) {
         $("#game").html("");
         for(var i=0;i<words.length;i++){
-           $("#game").append('<span id="w' + i+1 + '">'+ words[i]+' </span>');
+           $("#game").append('<span id="w' + i + '">'+ words[i]+'</span>' +" ");
+           $("#w0").css('background-color', '#FFFF99');
         }
       }
 
@@ -81,7 +82,12 @@
             //emits a 'correct' event when player types a word correctly
               socket.emit("correct",new Date());
               $('#result').html("Correct!");
+              var id = "#w" + ctr;
+              $(id).css('background-color', '#FFF');
+              $(id).css('color', 'green');
               ctr++;
+              id = "#w" + ctr;
+              $(id).css('background-color', '#FFFF99');
               if(ctr==words.length){
                 clearInterval(timeinterval);
                 $('#inputbox').prop('disabled',true);
