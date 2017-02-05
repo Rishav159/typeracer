@@ -30,7 +30,7 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-      var para, words, ctr,time_interval;
+      var para, words, ctr,time_interval,timeinterval;
       $(document).ready(function(){
         initializePage();
         socket = io();
@@ -46,6 +46,7 @@
           var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
           $('#main').html(begin);
           $("#game").html(data);
+          $('#inputbox').prop('disabled',false);
           para = data;
           words = para.split(" ");
           ctr = 0;
@@ -60,6 +61,7 @@
         $('#game').html("Wait for it.");
         $('#main').html("");
         $('#result').html("");
+        $('#inputbox').prop('disabled',false);
       }
 
       function check_word(event){
@@ -71,7 +73,8 @@
               $('#result').html("Correct!");
               ctr++;
               if(ctr==words.length){
-                socket.emit('finish',new Date());
+                clearInterval(timeinterval);
+                $('#inputbox').prop('disabled',true);
               }
               $('#inputbox').val("");
           }
@@ -151,7 +154,7 @@
                            ('0' + t.millis).slice(-2);
         }
         updateTimer()
-        var timeinterval = setInterval(updateTimer,20);
+        timeinterval = setInterval(updateTimer,20);
       }
 
       function initializeClock(id, endtime){

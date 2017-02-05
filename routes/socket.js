@@ -65,7 +65,6 @@ var prepareSocket = function(socket){
     global.players[socket.id]={};
     global.players[socket.id]['score']=0;
     global.players[socket.id]['time']=new Date();
-    global.players[socket.id]['finish_time'] = 0;
     console.log("global.players="+JSON.stringify(global.players));
   });
 
@@ -76,11 +75,6 @@ var prepareSocket = function(socket){
     console.log("correct word by player with socket_id "+socket.id);
     console.log(JSON.stringify(global.players));
     socket.broadcast.emit('leaderboards',global.players,global.start_time);
-  });
-
-  socket.on('finish',function(data){
-    global.players[socket.id]['finish_time']=Date.parse(global.start_time)-Date.parse(data);
-    console.log(socket.id+" finished @"+global.players[socket.id]['finish_time']);
   });
 
 }
