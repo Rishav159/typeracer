@@ -12,16 +12,16 @@
     <title>Type Racer</title>
   </head>
   <body>
-    <div class="w3-container w3-center" id="main">
 
-      <h1 class="w3-jumbo w3-allerta w3-text-red w3-animate-top" id="timer">00:00:05</h1>
-
+    <div class="w3-container w3-center">
+      <div id="main"></div>
+      <h1 class="w3-allerta w3-text-red w3-animate-top" id="timer">00:00:05</h1>
       <div class="w3-container w3-border w3-round">
         <h3 class="w3-text-grey w3-source-code" id="game">Wait for it.</h3>
       </div>
       <div id="result"></div>
-
     </div>
+
     <div class="inputdiv">
         <h3 class=" label w3-blue">Typing lane</h3>
         <input class="w3-topbar w3-border-blue w3-input w3-border-0 w3-light-grey w3-text-blue-grey" type="text" id="inputbox" placeholder="Ready to Race?">
@@ -31,7 +31,7 @@
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
     var socket;
-    
+
       var initialize_player = function(socket,name){
         socket = io();
         socket.emit("new_player",name);
@@ -41,13 +41,26 @@
         });
       }
 
+      var initializePage = function(){
+        $('#timer').html("00:00:05");
+        $('#game').html("Wait for it.");
+        $('#main').html("");
+        $('#result').html("");
+      }
+
+      initializePage();
+
+      socket.on('timer_is_set', function (data) {
+        initializePage();
+        initializeClock('timer',data)
+      });
 
       var para, words, ctr;
 
       socket.on('start_game', function (data) {
         var begin = '<h1 class="w3-jumbo w3-allerta w3-text-green w3-animate-top" id="begin">Begin!</h1>';
-        $('#timer').hide();
-        $('#main').prepend(begin);
+        $('#timer').html("");
+        $('#main').html(begin);
         $("#game").html(data);
         para = data;
         words = para.split(" ");
@@ -64,13 +77,12 @@
           if(input == words[ctr]){
             //emits a 'correct' event when player types a word correctly
               socket.emit("correct");
-              $('#result').html("yes");
+              $('#result').html("Correct!");
               ctr++;
               $('#inputbox').val("");
           }
           else
-             $('#result').html("no");
-
+             $('#result').html("Wrong! Type word again.");
         }
       }
 
