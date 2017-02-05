@@ -97,7 +97,7 @@
                 var millis = Math.floor((time_passed%1000)/10);
                 var seconds = Math.floor( (time_passed/1000) % 60 );
                 var minutes = Math.floor( (time_passed/1000/60) % 60 );
-                $('#timer').html(minutes+":"+seconds+":"+millis)
+                $('#timer').html(('0' + minutes).slice(-2) + ':' +('0' + seconds).slice(-2) + ':' +('0' + millis).slice(-2))
                 $('#inputbox').prop('disabled',true);
               }
               $('#inputbox').val("");
