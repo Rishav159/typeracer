@@ -6,12 +6,24 @@ router.get('/', function(req, res, next) {
   res.render('new_player')
 });
 router.get('/admin',function(req,res,next){
-  res.render('admin')
+  if(req.session['loggedin'] && req.session['loggedin'] == "admin"){
+    res.render('admin');
+  }else{
+    res.redirect('/');
+  }
 })
 router.post('/',function(req,res,next){
   if(req.body.name && req.body.password){
     if(req.body.name in global.players){
       res.send("Someone with same username already logged in")
+    }
+    else if(req.body.name == "admin") {
+      if(req.body.password == "csemundis"){
+        req.session['loggedin'] = req.body.name;
+        res.redirect('/admin');
+      }else {
+        res.send("Trespassing is prohibited!")
+      }
     }else{
       if(req.body.password == "typeracer"){
         req.session['loggedin'] = req.body.name
