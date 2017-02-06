@@ -48,7 +48,7 @@
           initializeClock('timer',now)
         });
         socket.on('start_game', function (data) {
-          var begin = '<h1 class="w3-jumbo w3-allerta w3-text-blue w3-animate-top" id="begin">Begin!</h1>';
+          var begin = '<h1 class="w3-jumbo w3-allerta w3-text-orange w3-animate-top" id="begin">Begin!</h1>';
           $('#main').html(begin);
           // $("#game").html(data);
           $('#inputbox').prop('disabled',false);
