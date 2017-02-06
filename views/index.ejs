@@ -32,7 +32,7 @@
 
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
-      
+
       var count_start , para, words, ctr,time_interval,timeinterval;
       $(document).ready(function(){
         initializePage();
@@ -54,7 +54,7 @@
           $('#inputbox').prop('disabled',false);
           para = data;
           var input = $.trim(para);
-          words = input.split(" ");
+          words = input.split(/\s+/);
           populate_para(words);
           ctr = 0;
           clearInterval()
@@ -65,8 +65,10 @@
 
       var populate_para = function(words) {
         $("#game").html("");
+        console.log(words);
         for(var i=0;i<words.length;i++){
-           $("#game").append('<span id="w' + i + '">'+ words[i]+'</span>' +" ");
+           word = words[i]
+           $("#game").append('<span id="w' + i + '">'+ word+'</span>' +" ");
            $("#w0").css('background-color', '#FFFF99');
         }
       }
