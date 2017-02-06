@@ -1,6 +1,9 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-image:url("../racing-track2.jpg");
+  background-size:cover;
+  background-repeat: no-repeat;
 }
 #result
 {
@@ -23,7 +26,8 @@ a {
 
 #game
 {
-  font-size:1.5vw;
+  text-align: left;
+  font-size:1.2vw;
   padding:10px;
 }
 
@@ -31,8 +35,8 @@ a {
 {
   border-top:2px solid indigo;
   text-align: center;
-  font-size:60px;
-  height:200px;
+  font-size:50px;
+  height:160px;
 }
 .inputdiv
 {
@@ -91,4 +95,15 @@ a {
 .racebtn
 {
   height:70px;
+}
+#background
+{
+  z-index:-1;
+  opacity:0.6;
+  background:linear-gradient(to top, rgba(0,0,0,0), rgba(0,0,100,1));
+  position:absolute;
+  top:0px;
+  bottom:0px;
+  left:0px;
+  right:0px;
 }
