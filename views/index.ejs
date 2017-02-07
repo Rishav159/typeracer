@@ -33,7 +33,7 @@
     <!--________________________SCRIPT_______________________-->
     <script type="text/javascript">
 
-      var count_start , para, words, ctr,time_interval,timeinterval;
+      var count_start , para, words, ctr,clock_count,timer_count;
       $(document).ready(function(){
         initializePage();
         socket = io();
@@ -79,6 +79,8 @@
         $('#main').html("");
         $('#result').html("");
         $('#inputbox').prop('disabled',false);
+        clearInterval(timer_count);
+        clearInterval(clock_count)
       }
 
       function check_word(event){
@@ -169,7 +171,7 @@
                            ('0' + t.millis).slice(-2);
         }
         updateTimer()
-        timeinterval = setInterval(updateTimer,20);
+        timer_count = setInterval(updateTimer,20);
       }
 
       function initializeClock(id, endtime){
@@ -181,16 +183,16 @@
                             ('0' + t.seconds).slice(-2) + ':' +
                            ('0' + t.millis).slice(-2);
           if(t.total<=0){
-            clearInterval(time_interval);
+            clearInterval(clock_count);
           }
         }
         updateClock()
-        time_interval = setInterval(updateClock,20);
+        clock_count = setInterval(updateClock,20);
       }
 
       function onFinish(){
         $('#begin').html('Finish');
-        clearInterval(timeinterval);
+        clearInterval(timer_count);
         var millis = Math.floor((time_passed%1000)/10);
         var seconds = Math.floor( (time_passed/1000) % 60 );
         var minutes = Math.floor( (time_passed/1000/60) % 60 );

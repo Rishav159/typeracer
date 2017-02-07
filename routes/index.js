@@ -38,8 +38,6 @@ router.post('/',function(req,res,next){
   }
 })
 router.get('/player/:name',function(req,res,next){
-  console.log(req.session['loggedin']);
-  console.log(req.params.name);
   if(req.session['loggedin'] == req.params.name){
     res.render('index');
   }else{
