@@ -70,33 +70,31 @@
           time_taken = minutes+(seconds/60)
           var wpm = player[1] / (minutes+(seconds/60))
           wpm = Math.round (wpm*100) / 100
-          var ele = "<tr><td>"+index+"</td><td>"+player[0]+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td><td>"+wpm+"</td></tr>"
+          var ele = "<tr><td>"+index+"</td><td>"+player[0].split('%20').join(' ')+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td><td>"+wpm+"</td></tr>"
           $('#leader_table').append(ele)
         }
       }});
       var getTimeRemaining = function(endtime){
         var now = new Date();
         var t = Date.parse(endtime) - Date.parse(now);
+        endtime = new Date(endtime)
+        var millis = Math.abs(endtime.getMilliseconds() - now.getMilliseconds())
+        var millis = Math.floor(millis / 10 );
         var seconds = Math.floor( (t/1000) % 60 );
         var minutes = Math.floor( (t/1000/60) % 60 );
-        var hours = Math.floor( (t/(1000*60*60)) % 24 );
-        var days = Math.floor( t/(1000*60*60*24) );
-
         if(t<=0){
           return {
             'total': 0,
-            'days': 0,
-            'hours': 0,
             'minutes': 0,
-            'seconds': 0
+            'seconds': 0,
+            'millis': 0
           };
         }else{
           return {
             'total': t,
-            'days': days,
-            'hours': hours,
             'minutes': minutes,
-            'seconds': seconds
+            'seconds': seconds,
+            'millis': millis
           };
         }
       }
@@ -105,17 +103,16 @@
         var clock = document.getElementById(id);
         function updateClock(){
           var t = getTimeRemaining(endtime);
-
           clock.innerHTML =
-                            ('0' + t.hours).slice(-2) + ':' +
                             ('0' + t.minutes).slice(-2) + ':' +
-                           ('0' + t.seconds).slice(-2);
+                            ('0' + t.seconds).slice(-2) + ':' +
+                           ('0' + t.millis).slice(-2);
           if(t.total<=0){
             clearInterval(timeinterval);
           }
         }
         updateClock()
-        var timeinterval = setInterval(updateClock,1000);
+        var timeinterval = setInterval(updateClock,20);
       }
       // var t = new Date();
       // t.setSeconds(t.getSeconds() + 10);
