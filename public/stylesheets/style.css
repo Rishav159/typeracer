@@ -106,3 +106,40 @@ a {
   left:0px;
   right:0px;
 }
+
+
+@media only screen and (max-width: 550px) {
+  #main{
+    position:relative;
+    top:-40px;
+  }
+  #timer{
+    position:relative;
+    top:-40px;
+  }
+  #main h1{
+      font-size:5vw!important;
+  }
+  #game-div
+  {
+    position:relative;
+    top:-30px;
+  }
+  #game{
+    text-align:left;
+    font-size:3.5vw;
+  }
+  #timer{
+    font-size:6vw!important;
+  }
+  .inputdiv{
+    position:fixed;
+    bottom:0px;
+  }
+  #inputbox{
+    height:70px;
+    font-size:5vw!important;
+    position:relative;
+
+  }
+}
