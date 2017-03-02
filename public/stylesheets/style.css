@@ -147,6 +147,23 @@ a {
     height:70px;
     font-size:5vw!important;
     position:relative;
-
+  }
+  .form-container
+  {
+    width:100%!important;
+  }
+  .signin-form{
+    display:block!important;
+    width:100%!important;
+    text-align:center!important;
+  }
+  .signin-form input{
+    width:50vw!important;
+  }
+  .signin-form button{
+    width:20vw!important;
+  }
+  body{
+    background-size: auto;
   }
 }
