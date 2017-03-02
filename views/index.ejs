@@ -69,7 +69,8 @@
         for(var i=0;i<words.length;i++){
            word = words[i]
            $("#game").append('<span id="w' + i + '">'+ word+'</span>' +" ");
-           $("#w0").css('background-color', '#FFFF99');
+           $('#w0').addClass('highlight');
+          //  $("#w0").css('background-color', '#FFFF99');
         }
       }
 
@@ -94,11 +95,11 @@
               socket.emit("correct",time_passed);
               $('#result').html("Correct!");
               var id = "#w" + ctr;
-              $(id).css('background-color', '#FFF');
+              $(id).removeClass('highlight');
               $(id).css('color', 'green');
               ctr++;
               id = "#w" + ctr;
-              $(id).css('background-color', '#FFFF99');
+              $(id).addClass('highlight');
               if(ctr==words.length){
                 onFinish();
               }

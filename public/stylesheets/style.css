@@ -107,8 +107,15 @@ a {
   right:0px;
 }
 
+.highlight
+{
+  background-color: #FFFF99;
+}
 
 @media only screen and (max-width: 550px) {
+  .highlight{
+    font-size:5.5vw;
+  }
   #main{
     position:relative;
     top:-40px;
@@ -126,8 +133,8 @@ a {
     top:-30px;
   }
   #game{
-    text-align:left;
-    font-size:3.5vw;
+    text-align:justify;
+    font-size:2.5vw;
   }
   #timer{
     font-size:6vw!important;
