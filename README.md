@@ -6,6 +6,7 @@ A multi-player typing game built in Node.JS and ExpressJS
 2. Navigate to the folder in a console
 3. Run `npm install && npm start`
 4. Subsequent starts only require `npm start`
+5. Username: admin Password: csemundis
 
 ## Contributing
 1. Fork it!
