@@ -14,7 +14,6 @@ global.players = {};
  */
 
 var app = require('../app');
-var debug = require('debug')('typeracer:server');
 var http = require('http');
 var socketFunction = require('../routes/socket');
 /**
@@ -22,6 +21,7 @@ var socketFunction = require('../routes/socket');
  */
 
 var port = normalizePort(process.env.PORT || '3000');
+var ip = process.env.IP || '0.0.0.0';
 app.set('port', port);
 
 /**
@@ -35,8 +35,8 @@ io.on('connection',socketFunction);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(process.env.PORT, function() {
-  console.log(process.env.IP + ":" + process.env.PORT);
+server.listen(port, function() {
+  console.log("Server started successfully on " + ip + ":" + port);
 });
 server.on('error', onError);
 

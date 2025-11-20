@@ -17,6 +17,8 @@ router.post('/',function(req,res,next){
     if(req.body.name in global.players){
       res.send("Someone with same username already logged in")
     }
+    // this is a pet project and i am too lazy to implement proper auth.
+    // needless to say, do not use this in production.
     else if(req.body.name == "admin") {
       if(req.body.password == "csemundis"){
         req.session['loggedin'] = req.body.name;

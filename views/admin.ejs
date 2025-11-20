@@ -10,70 +10,278 @@
     <title>Type Racer</title>
   </head>
   <body>
-    <input id='para' type="text" name="para" value="">
-    <button onclick="set_paragraph()" type="button" name="submit">Submit Para</button>
-    <button onclick='set_timer()' type="button" name="submit">Start Timer</button>
-    <div id="timer"></div>
-    <div id="game"></div>
-    <div id="leaderboards" class="w3-container">
-      <table class="w3-table w3-card-4" id = "leader_table">
-      </table>
-    </div>
+    <div class="admin-overlay"></div>
+    <main class="admin-wrapper">
+      <header class="admin-header">
+        <h1>Race Control Center</h1>
+      </header>
 
+      <div class="dashboard-grid">
+        <section class="panel-card control-panel">
+          <div class="timer-card">
+            <p class="timer-label">Race Timer</p>
+            <div id="timer">--:--:--</div>
+            <div class="timer-actions" id="timer-actions">
+              <button id="start-timer-btn" class="primary-btn" onclick="set_timer()" type="button">Start Timer</button>
+              <p class="timer-status is-hidden" id="timer-status"></p>
+            </div>
+          </div>
+          <div class="paragraph-panel">
+            <div class="input-group" id="paragraph-input-group">
+              <label for="para">Race Paragraph</label>
+              <textarea id="para" name="para" placeholder="Paste or type the paragraph you want racers to complete."></textarea>
+              <div class="button-row">
+                <button class="primary-btn" onclick="submit_paragraph()" type="button">Submit Paragraph</button>
+              </div>
+            </div>
+            <div class="paragraph-display is-hidden" id="paragraph-display" aria-live="polite">
+              <div class="paragraph-display__label">Current Paragraph</div>
+              <div class="paragraph-display__body" id="paragraph-text"></div>
+              <div class="button-row">
+                <button class="ghost-btn" onclick="enable_paragraph_edit()" type="button">Change Paragraph</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
-
-
+        <section class="leaderboard-card">
+          <h2>Live Leaderboard</h2>
+          <div id="leaderboards">
+            <table id="leader_table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Words</th>
+                  <th>Time Taken</th>
+                  <th>Words Per Minute</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="placeholder-row">
+                  <td colspan="5">Waiting for racers to join...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
     <script type="text/javascript">
       var socket = io();
+      var raceState = 'idle';
+      var countdownInterval = null;
+      var elapsedInterval = null;
+      var countdownTarget = null;
+      var raceStartTime = null;
+      var currentParagraph = '';
+
+      var setRaceState = function(state){
+        raceState = state || 'idle';
+        if(document && document.body){
+          document.body.classList.remove('race-countdown','race-live');
+          if(state === 'countdown'){
+            document.body.classList.add('race-countdown');
+          }else if(state === 'live'){
+            document.body.classList.add('race-live');
+          }
+        }
+      }
+
+      var timerActionState = 'ready';
+      var setTimerActionState = function(state){
+        timerActionState = state || 'ready';
+        var btn = document.getElementById('start-timer-btn');
+        var status = document.getElementById('timer-status');
+        if(state === 'ready'){
+          if(btn){
+            btn.classList.remove('is-hidden');
+            btn.disabled = false;
+          }
+          if(status){
+            status.classList.add('is-hidden');
+            status.textContent = '';
+          }
+        }else{
+          if(btn){
+            btn.classList.add('is-hidden');
+            btn.disabled = true;
+          }
+          if(status){
+            status.classList.remove('is-hidden');
+            status.textContent = state === 'countdown' ? 'Countdown in progress...' : 'Race live';
+          }
+        }
+      }
+
+      var setTimerDisplay = function(value){
+        var timerEl = document.getElementById('timer');
+        if(timerEl){
+          timerEl.textContent = value;
+        }
+      }
+
+      var clearCountdown = function(){
+        if(countdownInterval){
+          clearInterval(countdownInterval);
+          countdownInterval = null;
+        }
+      }
+
+      var clearElapsed = function(){
+        if(elapsedInterval){
+          clearInterval(elapsedInterval);
+          elapsedInterval = null;
+        }
+      }
+
+      var formatClock = function(parts){
+        return ('0' + (parts.minutes || 0)).slice(-2) + ':' +
+               ('0' + (parts.seconds || 0)).slice(-2) + ':' +
+               ('0' + (parts.millis || 0)).slice(-2);
+      }
+
+      var startCountdownClock = function(endtime){
+        clearCountdown();
+        setRaceState('countdown');
+        countdownTarget = endtime;
+        var updateClock = function(){
+          var t = getTimeRemaining(endtime);
+          setTimerDisplay(formatClock(t));
+          if(t.total<=0){
+            clearCountdown();
+          }
+        }
+        updateClock();
+        countdownInterval = setInterval(updateClock,20);
+      }
+
+      var startElapsedClock = function(starttime){
+        clearCountdown();
+        clearElapsed();
+        raceStartTime = starttime;
+        var updateTimer = function(){
+          var t = getTimeElapsed(starttime);
+          setTimerDisplay(formatClock(t));
+        }
+        updateTimer();
+        elapsedInterval = setInterval(updateTimer,20);
+      }
+
+      var showParagraphDisplay = function(text){
+        currentParagraph = text;
+        $('#paragraph-text').text(text);
+        $('#paragraph-display').removeClass('is-hidden');
+        $('#paragraph-input-group').addClass('is-hidden');
+      }
+
+      var showParagraphEditor = function(presetText){
+        $('#paragraph-input-group').removeClass('is-hidden');
+        $('#paragraph-display').addClass('is-hidden');
+        var value = typeof presetText === 'string' ? presetText : currentParagraph;
+        $('#para').val(value);
+        setTimeout(function(){
+          $('#para').focus();
+        },0);
+      }
+
+      var submit_paragraph = function(){
+        var paraRaw = $('#para').val();
+        var paraValue = paraRaw.trim();
+        if(!paraValue){
+          window.alert('Please enter a paragraph before submitting.');
+          return;
+        }
+        socket.emit('set_paragraph',paraValue);
+        showParagraphDisplay(paraRaw);
+      }
+
+      var enable_paragraph_edit = function(){
+        showParagraphEditor(currentParagraph);
+        if(raceState !== 'live'){
+          clearCountdown();
+          clearElapsed();
+          setRaceState('idle');
+          setTimerDisplay('--:--:--');
+          setTimerActionState('ready');
+        }
+      }
+
+      setRaceState('idle');
+      setTimerDisplay('--:--:--');
+      showParagraphEditor('');
+      setTimerActionState('ready');
+
       var set_timer = function(){
         socket.emit('set_timer');
+        setTimerActionState('countdown');
       }
-      var set_paragraph = function(){
-        socket.emit('set_paragraph',$('#para').val())
-      }
-      socket.on('timer_is_set', function () {
-        initializeClock('timer',new Date()+5)
+
+      socket.on('timer_is_set', function (payload) {
+        var targetTime = payload && payload.countdown_to ? new Date(payload.countdown_to) : new Date(Date.now()+5000);
+        startCountdownClock(targetTime);
+        setTimerActionState('countdown');
       });
 
-      socket.on('start_game', function (data) {
-        $("#game").html(data)
+      socket.on('start_game', function (payload) {
+        var data = (payload && payload.paragraph) ? payload : { paragraph: payload };
+        var paragraphText = data.paragraph || '';
+        var raceStart = data.start_time ? new Date(data.start_time) : new Date();
+        setRaceState('live');
+        setTimerActionState('live');
+        startElapsedClock(raceStart);
+        if(paragraphText && currentParagraph !== paragraphText){
+          showParagraphDisplay(paragraphText);
+        }
       });
       socket.on('leaderboards',function(leaderboards,start_time){
-        players = []
-        for(player in leaderboards){
-
+        var players = [];
+        for(var player in leaderboards){
+          if(!leaderboards.hasOwnProperty(player)){
+            continue;
+          }
           players.push([player,leaderboards[player]['score'],leaderboards[player]['time']])
         }
         players.sort(function(a,b){
-          if(b[1] == a[1]){
+          if(b[1] === a[1]){
             return a[2]-b[2]
           }
           return b[1]-a[1]
         })
 
-        $('#leader_table').html("<tr class='w3-red'><th>Rank</th><th>Name</th><th>Words</th><th>Time Taken</th></tr>")
-        for(var i =0;i<players.length;i++){
-          player = players[i]
-          index = i+1
-          time_elapsed = ('0'+Math.floor( (player[2]/1000/60) % 60 )).slice(-2) + ":"+('0'+Math.floor( (player[2]/1000) % 60 )).slice(-2) + ":"+('0' + Math.floor((player[2] %1000)/10)).slice(-2)
-          var ele = "<tr class='w3-animate-left'><td>"+index+"</td><td>"+player[0]+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td></tr>"
-          console.log(ele);
-
-        $('#leader_table').html("<thead class='w3-red'><td>Rank</td><td>Name</td><td>Words</td><td>Time Taken</td><td>Words Per Minute</td></thead>")
-        for(var i =0;i<players.length;i++){
-          player = players[i]
-          index = i+1
-          var minutes = Math.floor( (player[2]/1000/60) % 60 )
-          var seconds = Math.floor( (player[2]/1000) % 60 )
-          var milliseconds = Math.floor((player[2] %1000)/10)
-          time_elapsed = ('0'+minutes).slice(-2) + ":"+('0'+seconds).slice(-2) + ":"+('0' + milliseconds).slice(-2)
-          time_taken = minutes+(seconds/60)
-          var wpm = player[1] / (minutes+(seconds/60))
-          wpm = Math.round (wpm*100) / 100
-          var ele = "<tr><td>"+index+"</td><td>"+player[0].split('%20').join(' ')+"</td><td>"+player[1]+"</td><td>"+time_elapsed+"</td><td>"+wpm+"</td></tr>"
-          $('#leader_table').append(ele)
+        var table = $('#leader_table');
+        var thead = table.find('thead');
+        if(!thead.length){
+          thead = $('<thead></thead>').appendTo(table);
         }
-      }});
+        thead.html("<tr><th>Rank</th><th>Name</th><th>Words</th><th>Time Taken</th><th>Words Per Minute</th></tr>");
+
+        var tbody = table.find('tbody');
+        if(!tbody.length){
+          tbody = $('<tbody></tbody>').appendTo(table);
+        }
+        tbody.empty();
+
+        if(players.length === 0){
+          tbody.append("<tr class='placeholder-row'><td colspan='5'>Waiting for racers to join...</td></tr>");
+          return;
+        }
+
+        for(var i =0;i<players.length;i++){
+          var playerData = players[i]
+          var index = i+1
+          var minutes = Math.floor( (playerData[2]/1000/60) % 60 )
+          var seconds = Math.floor( (playerData[2]/1000) % 60 )
+          var milliseconds = Math.floor((playerData[2] %1000)/10)
+          var time_elapsed = ('0'+minutes).slice(-2) + ":"+('0'+seconds).slice(-2) + ":"+('0' + milliseconds).slice(-2)
+          var durationMinutes = playerData[2] / 60000
+          var safeDuration = durationMinutes > 0 ? durationMinutes : (1/60)
+          var wpm = playerData[1] / safeDuration
+          wpm = Math.round (wpm*100) / 100
+          var ele = "<tr><td>"+index+"</td><td>"+playerData[0].split('%20').join(' ')+"</td><td>"+playerData[1]+"</td><td>"+time_elapsed+"</td><td>"+wpm+"</td></tr>"
+          tbody.append(ele)
+        }
+      });
       var getTimeRemaining = function(endtime){
         var now = new Date();
         var t = Date.parse(endtime) - Date.parse(now);
@@ -99,24 +307,29 @@
         }
       }
 
-      function initializeClock(id, endtime){
-        var clock = document.getElementById(id);
-        function updateClock(){
-          var t = getTimeRemaining(endtime);
-          clock.innerHTML =
-                            ('0' + t.minutes).slice(-2) + ':' +
-                            ('0' + t.seconds).slice(-2) + ':' +
-                           ('0' + t.millis).slice(-2);
-          if(t.total<=0){
-            clearInterval(timeinterval);
-          }
+      var getTimeElapsed = function(starttime){
+        var now = new Date();
+        var t = Date.parse(now) - Date.parse(starttime);
+        var millis = Math.abs(now.getMilliseconds() - starttime.getMilliseconds())
+        millis = Math.floor((millis % 1000) / 10);
+        var seconds = Math.floor( (t/1000) % 60 );
+        var minutes = Math.floor( (t/1000/60) % 60 );
+        if(t<=0){
+          return {
+            'total': 0,
+            'minutes': 0,
+            'seconds': 0,
+            'millis': 0
+          };
+        }else{
+          return {
+            'total': t,
+            'minutes': minutes,
+            'seconds': seconds,
+            'millis': millis
+          };
         }
-        updateClock()
-        var timeinterval = setInterval(updateClock,20);
       }
-      // var t = new Date();
-      // t.setSeconds(t.getSeconds() + 10);
-      // initializeClock('timer',t)
     </script>
   </body>
 </html>

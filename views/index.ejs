@@ -52,7 +52,7 @@
           $('#main').html(begin);
           // $("#game").html(data);
           $('#inputbox').prop('disabled',false);
-          para = data;
+          para = data.paragraph;
           var input = $.trim(para);
           words = input.split(/\s+/);
           populate_para(words);
